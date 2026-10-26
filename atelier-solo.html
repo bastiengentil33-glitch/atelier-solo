@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier Solo — Brainstorming accompagné</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EEF0E7;
+    --paper-line: rgba(32,40,36,0.06);
+    --ink:#202824;
+    --ink-soft:#5B655F;
+    --coral:#FF5A3C;
+    --coral-pastel:#FFE1D6;
+    --violet:#6F4FE8;
+    --violet-pastel:#E6E0FB;
+    --mint:#2FAE96;
+    --mint-pastel:#D7F2EC;
+    --yellow:#E8A400;
+    --yellow-pastel:#FFF1CE;
+    --pink:#E85D8C;
+    --pink-pastel:#FFE1EC;
+    --slate:#5C6864;
+    --slate-pastel:#E4E8E5;
+    --card:#FFFFFF;
+    --shadow: 0 10px 24px rgba(32,40,36,0.10), 0 2px 6px rgba(32,40,36,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    overflow:hidden;
+  }
+  #app{position:relative; width:100vw; height:100vh; overflow:hidden;}
+
+  .mono{font-family:'IBM Plex Mono',monospace; letter-spacing:0.02em;}
+  .display{font-family:'Space Grotesk',sans-serif;}
+
+  /* ---------- HOME ---------- */
+  #home{
+    position:absolute; inset:0;
+    overflow-y:auto;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px),
+      var(--paper);
+    background-size: 28px 28px;
+  }
+  .home-inner{
+    max-width:920px; margin:0 auto; padding:56px 24px 90px;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; text-transform:uppercase; color:var(--violet);
+    font-weight:600; margin-bottom:14px;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--violet); box-shadow:0 0 0 4px var(--violet-pastel);}
+  h1.title{
+    font-size:44px; line-height:1.05; margin:0 0 14px; font-weight:700;
+  }
+  h1.title span{color:var(--coral);}
+  .subtitle{
+    font-size:16px; color:var(--ink-soft); max-width:560px; line-height:1.55; margin-bottom:36px;
+  }
+  .topic-box{
+    background:var(--card); border-radius:14px; padding:18px 20px;
+    box-shadow:var(--shadow); margin-bottom:40px;
+    border:1px solid rgba(32,40,36,0.06);
+  }
+  .topic-box label{
+    display:block; font-size:12px; font-weight:600; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;
+  }
+  .topic-box input{
+    width:100%; border:none; outline:none; font-family:'Space Grotesk',sans-serif;
+    font-size:20px; font-weight:600; color:var(--ink); background:transparent;
+  }
+  .topic-box input::placeholder{color:#B7BEB9; font-weight:500;}
+
+  .modes-label{
+    font-size:12px; font-weight:600; color:var(--ink-soft); text-transform:uppercase;
+    letter-spacing:0.05em; margin-bottom:16px;
+  }
+  .cat-tabs{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;
+  }
+  .cat-tab{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    background:var(--card); color:var(--ink-soft); border:1px solid rgba(32,40,36,0.1);
+    padding:8px 14px; border-radius:18px; cursor:pointer; white-space:nowrap;
+  }
+  .cat-tab .count{color:inherit; opacity:0.55; margin-left:4px;}
+  .cat-tab:hover{border-color:var(--violet); color:var(--ink);}
+  .cat-tab.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .mode-card .cat-badge{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+    font-weight:600; text-transform:uppercase; letter-spacing:0.03em;
+    color:var(--ink-soft); background:var(--paper); padding:3px 8px;
+    border-radius:5px; margin-bottom:10px;
+  }
+  .modes-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr));
+    gap:16px;
+  }
+  .mode-card{
+    position:relative;
+    background:var(--card);
+    border-radius:12px;
+    padding:18px 18px 20px;
+    cursor:pointer;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(32,40,36,0.06);
+    transition:transform .15s ease, box-shadow .15s ease;
+    text-align:left;
+  }
+  .mode-card:nth-child(3n+1){transform:rotate(-0.6deg);}
+  .mode-card:nth-child(3n+2){transform:rotate(0.5deg);}
+  .mode-card:nth-child(3n){transform:rotate(-0.3deg);}
+  .mode-card:hover{transform:translateY(-4px) rotate(0deg); box-shadow:0 16px 30px rgba(32,40,36,0.14);}
+  .mode-card .pin{
+    position:absolute; top:10px; right:14px; width:9px; height:9px; border-radius:50%;
+  }
+  .mode-card h3{
+    font-family:'Space Grotesk',sans-serif; font-size:18px; margin:0 0 8px; padding-right:16px;
+  }
+  .mode-card p{
+    font-size:13.5px; color:var(--ink-soft); line-height:1.5; margin:0 0 14px;
+  }
+  .mode-card .zones-preview{
+    display:flex; gap:4px; height:26px;
+  }
+  .mode-card .zones-preview span{
+    flex:1; border-radius:4px; opacity:0.7;
+  }
+  .start-hint{
+    margin-top:34px; font-size:13px; color:var(--ink-soft); text-align:center;
+  }
+
+  /* ---------- WORKSPACE ---------- */
+  #workspace{position:absolute; inset:0; display:none; flex-direction:column;}
+  #workspace.active{display:flex;}
+
+  .topbar{
+    display:flex; align-items:center; gap:16px;
+    padding:12px 18px; background:var(--card);
+    border-bottom:1px solid rgba(32,40,36,0.08);
+    z-index:20;
+  }
+  .back-btn{
+    display:flex; align-items:center; gap:6px;
+    background:none; border:none; cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    color:var(--ink-soft); padding:8px 10px; border-radius:8px;
+  }
+  .back-btn:hover{background:var(--paper); color:var(--ink);}
+  .topbar-mode{
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    padding:6px 12px; border-radius:8px; background:var(--violet-pastel); color:var(--violet);
+    white-space:nowrap;
+  }
+  .topbar-topic{
+    flex:1; font-size:14px; font-weight:500; color:var(--ink);
+    border:none; outline:none; background:transparent; min-width:0;
+  }
+  .assist-toggle{
+    display:flex; align-items:center; gap:8px;
+    background:var(--ink); color:#fff; border:none; border-radius:20px;
+    padding:9px 16px; cursor:pointer; font-size:13px; font-weight:600;
+    font-family:'Inter',sans-serif; white-space:nowrap;
+  }
+  .assist-toggle .orb{width:8px;height:8px;border-radius:50%;background:var(--violet); box-shadow:0 0 0 3px rgba(111,79,232,0.35);}
+  .assist-toggle.thinking .orb{animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1); opacity:1;} 50%{transform:scale(1.7); opacity:0.5;}}
+
+  .workspace-body{flex:1; display:flex; min-height:0;}
+
+  .canvas-wrap{
+    flex:1; position:relative; overflow:auto;
+    background:
+      linear-gradient(var(--paper-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--paper-line) 1px, transparent 1px),
+      var(--paper);
+    background-size:26px 26px;
+  }
+  #canvas{
+    position:relative; width:100%; height:100%; min-height:640px;
+  }
+  .zone{
+    position:absolute;
+    border-radius:10px;
+    cursor:cell;
+    transition:background .15s ease;
+  }
+  .zone-inset{
+    position:absolute; inset:6px;
+    border:1.5px dashed rgba(32,40,36,0.16);
+    border-radius:8px;
+  }
+  .zone-tag{
+    position:absolute; top:12px; left:14px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;
+    text-transform:uppercase; letter-spacing:0.04em;
+    padding:5px 10px; border-radius:6px; background:var(--card);
+    box-shadow:0 2px 6px rgba(32,40,36,0.12);
+    pointer-events:none;
+  }
+  .zone-hint{
+    position:absolute; bottom:12px; left:14px; right:14px;
+    font-size:12px; color:rgba(32,40,36,0.32); pointer-events:none;
+  }
+  .center-node{
+    position:absolute; display:flex; align-items:center; justify-content:center;
+    text-align:center; border-radius:14px; background:var(--ink); color:#fff;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+    padding:14px; box-shadow:var(--shadow);
+  }
+
+  .note{
+    position:absolute;
+    width:168px; min-height:100px;
+    border-radius:8px;
+    padding:12px 12px 26px;
+    box-shadow:var(--shadow);
+    cursor:grab;
+    font-size:13.5px; line-height:1.4; color:var(--ink);
+    border-top:6px solid transparent;
+    z-index:10;
+  }
+  .note.dragging{cursor:grabbing; z-index:50; box-shadow:0 18px 30px rgba(0,0,0,0.2);}
+  .note[contenteditable="true"]:focus{outline:2px solid rgba(0,0,0,0.15); outline-offset:2px;}
+  .note .pin-dot{
+    position:absolute; top:-11px; left:50%; transform:translateX(-50%);
+    width:14px; height:14px; border-radius:50%; background:#fff;
+    box-shadow:0 2px 4px rgba(0,0,0,0.25);
+  }
+  .note .pin-dot::after{
+    content:''; position:absolute; inset:3px; border-radius:50%;
+  }
+  .note .del-btn{
+    position:absolute; bottom:6px; right:8px;
+    width:20px; height:20px; border-radius:50%; border:none;
+    background:rgba(255,255,255,0.6); color:var(--ink); cursor:pointer;
+    font-size:12px; line-height:20px; text-align:center; padding:0;
+  }
+  .note .del-btn:hover{background:#fff;}
+  .note-enter{animation:drop-in .38s cubic-bezier(.2,.9,.3,1.2);}
+  @keyframes drop-in{
+    0%{transform:scale(0.4) translateY(-30px); opacity:0;}
+    100%{transform:scale(1) translateY(0); opacity:1;}
+  }
+
+  /* toolbar of colors */
+  .palette-bar{
+    position:absolute; left:14px; bottom:14px; z-index:15;
+    display:flex; gap:8px; background:var(--card); padding:8px;
+    border-radius:12px; box-shadow:var(--shadow);
+  }
+  .swatch{
+    width:26px; height:26px; border-radius:7px; cursor:pointer; border:2px solid transparent;
+  }
+  .swatch.active{border-color:var(--ink);}
+
+  /* ---------- AI PANEL ---------- */
+  #ai-panel{
+    width:340px; flex-shrink:0; background:var(--card);
+    border-left:1px solid rgba(32,40,36,0.08);
+    display:flex; flex-direction:column;
+    transform:translateX(0); transition:margin .2s ease;
+  }
+  #ai-panel.collapsed{ width:0; overflow:hidden; }
+
+  .ai-header{
+    padding:16px 18px 12px; border-bottom:1px solid rgba(32,40,36,0.08);
+  }
+  .ai-header h2{
+    font-family:'Space Grotesk',sans-serif; font-size:16px; margin:0 0 4px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .ai-header h2 .orb{width:9px;height:9px;border-radius:50%;background:var(--violet); box-shadow:0 0 0 4px var(--violet-pastel);}
+  .ai-header p{font-size:12.5px; color:var(--ink-soft); margin:0; line-height:1.5;}
+
+  .ai-quick{
+    padding:12px 16px; display:flex; flex-wrap:wrap; gap:6px;
+    border-bottom:1px solid rgba(32,40,36,0.08);
+  }
+  .qbtn{
+    font-size:12px; font-family:'Inter',sans-serif; font-weight:500;
+    background:var(--paper); border:1px solid rgba(32,40,36,0.08); color:var(--ink);
+    padding:7px 10px; border-radius:16px; cursor:pointer;
+  }
+  .qbtn:hover{background:var(--violet-pastel); border-color:var(--violet);}
+  .qbtn.primary{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .qbtn.primary:hover{background:var(--coral); border-color:var(--coral);}
+
+  .ai-log{
+    flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px;
+  }
+  .bubble{
+    max-width:100%; padding:10px 13px; border-radius:12px; font-size:13.5px; line-height:1.55;
+  }
+  .bubble.ai{background:var(--violet-pastel); color:var(--ink); border-top-left-radius:2px;}
+  .bubble.user{background:var(--paper); color:var(--ink); align-self:flex-end; border-top-right-radius:2px;}
+  .bubble.system{background:none; color:var(--ink-soft); font-size:12px; text-align:center; padding:2px;}
+
+  .ai-input-row{
+    padding:12px 14px; border-top:1px solid rgba(32,40,36,0.08);
+    display:flex; gap:8px;
+  }
+  .ai-input-row input{
+    flex:1; border:1px solid rgba(32,40,36,0.14); border-radius:10px;
+    padding:10px 12px; font-size:13px; outline:none; font-family:'Inter',sans-serif;
+  }
+  .ai-input-row input:focus{border-color:var(--violet);}
+  .ai-send{
+    background:var(--violet); color:#fff; border:none; border-radius:10px;
+    width:40px; cursor:pointer; font-size:15px;
+  }
+  .ai-send:hover{background:#5A3AD1;}
+  .ai-send:disabled{opacity:0.5; cursor:default;}
+
+  @media (max-width: 760px){
+    .workspace-body{flex-direction:column;}
+    #ai-panel{width:100%; height:44%; border-left:none; border-top:1px solid rgba(32,40,36,0.08);}
+    #ai-panel.collapsed{width:100%; height:0;}
+    .topbar-topic{display:none;}
+    h1.title{font-size:32px;}
+    .modes-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= HOME ================= -->
+  <div id="home">
+    <div class="home-inner">
+      <div class="eyebrow"><span class="dot"></span>Atelier solo</div>
+      <h1 class="title">Brainstorme <span>seul</span>,<br>accompagné comme en équipe.</h1>
+      <p class="subtitle">Choisis une méthode, pose ton sujet, et remplis un board de post-it. L'assistant relance, challenge et propose des idées quand tu sèches — sans jamais décider à ta place.</p>
+
+      <div class="topic-box">
+        <label for="topic-input">Ton sujet ou ton problème</label>
+        <input id="topic-input" type="text" placeholder="Ex. Comment relancer l'engagement de mon équipe ?">
+      </div>
+
+      <div class="modes-label">Choisis une méthode</div>
+      <div class="cat-tabs" id="cat-tabs"></div>
+      <div class="modes-grid" id="modes-grid"></div>
+
+      <div class="start-hint">Tu pourras changer de méthode à tout moment.</div>
+    </div>
+  </div>
+
+  <!-- ================= WORKSPACE ================= -->
+  <div id="workspace">
+    <div class="topbar">
+      <button class="back-btn" id="back-btn">← Nouvel atelier</button>
+      <div class="topbar-mode" id="topbar-mode">—</div>
+      <input class="topbar-topic" id="topbar-topic" type="text">
+      <button class="assist-toggle" id="assist-toggle"><span class="orb"></span>Assistant IA</button>
+    </div>
+    <div class="workspace-body">
+      <div class="canvas-wrap">
+        <div id="canvas"></div>
+        <div class="palette-bar" id="palette-bar"></div>
+      </div>
+      <div id="ai-panel">
+        <div class="ai-header">
+          <h2><span class="orb"></span>Assistant</h2>
+          <p id="ai-tagline">Choisis une méthode pour commencer.</p>
+        </div>
+        <div class="ai-quick" id="ai-quick"></div>
+        <div class="ai-log" id="ai-log"></div>
+        <div class="ai-input-row">
+          <input id="ai-input" type="text" placeholder="Demande quelque chose à l'assistant…">
+          <button class="ai-send" id="ai-send">↑</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+  const COLORS = {
+    coral:  {solid:'#FF5A3C', pastel:'#FFE1D6'},
+    violet: {solid:'#6F4FE8', pastel:'#E6E0FB'},
+    mint:   {solid:'#2FAE96', pastel:'#D7F2EC'},
+    yellow: {solid:'#E8A400', pastel:'#FFF1CE'},
+    pink:   {solid:'#E85D8C', pastel:'#FFE1EC'},
+    slate:  {solid:'#5C6864', pastel:'#E4E8E5'},
+    ink:    {solid:'#202824', pastel:'#DDE2DF'}
+  };
+  const COLOR_ORDER = ['coral','violet','mint','yellow','pink','slate'];
+
+  const CATEGORIES = {
+    tous:       "Tous",
+    probleme:   "Résolution de problème",
+    creativite: "Créativité",
+    decision:   "Décision",
+    ux:         "UX / Utilisateur",
+    angles:     "Angles de pensée"
+  };
+  const MODE_CATEGORY = {
+    libre:'creativite', probleme:'probleme', swot:'decision', chapeaux:'angles',
+    scamper:'creativite', mindmap:'creativite', decision:'decision', fivewhys:'probleme',
+    eisenhower:'decision', ishikawa:'probleme', whatif:'creativite', lotus:'creativite',
+    journey:'ux', brainwriting:'creativite', reverse:'probleme', empathie:'ux',
+    premortem:'probleme', parties:'decision'
+  };
+
+  const MODES = {
+    libre: {
+      name:"Brainstorm libre",
+      tagline:"Aucun cadre. Pose tes idées, l'ordre viendra après.",
+      cardText:"Un board vide, aucune contrainte. Idéal pour une première décharge d'idées.",
+      zones:[ {id:'z1', label:'Idées', color:'mint', x:0,y:0,w:100,h:100, hint:'Clique n\'importe où pour poser une idée'} ]
+    },
+    probleme: {
+      name:"Résolution de problème",
+      tagline:"Isole le problème, explore ses causes, ouvre des pistes.",
+      cardText:"Trois colonnes : le problème, ses causes possibles, des pistes de solution.",
+      zones:[
+        {id:'pb', label:'Le problème', color:'coral', x:0,y:0,w:33.33,h:100, hint:'Formule le problème précisément'},
+        {id:'ca', label:'Causes possibles', color:'yellow', x:33.33,y:0,w:33.33,h:100, hint:'Pourquoi ce problème existe-t-il ?'},
+        {id:'so', label:'Pistes de solution', color:'mint', x:66.66,y:0,w:33.34,h:100, hint:'Comment y répondre ?'}
+      ]
+    },
+    swot: {
+      name:"SWOT",
+      tagline:"Forces, faiblesses, opportunités, menaces.",
+      cardText:"La matrice classique en quatre quadrants pour une vue d'ensemble.",
+      zones:[
+        {id:'f',label:'Forces',color:'mint',x:0,y:0,w:50,h:50, hint:'Atouts internes'},
+        {id:'w',label:'Faiblesses',color:'coral',x:50,y:0,w:50,h:50, hint:'Fragilités internes'},
+        {id:'o',label:'Opportunités',color:'yellow',x:0,y:50,w:50,h:50, hint:'Facteurs externes favorables'},
+        {id:'t',label:'Menaces',color:'violet',x:50,y:50,w:50,h:50, hint:'Facteurs externes défavorables'}
+      ]
+    },
+    chapeaux: {
+      name:"Six chapeaux",
+      tagline:"Six façons de penser un même sujet, chapeau après chapeau.",
+      cardText:"La méthode de Bono : traverse le sujet sous six angles distincts.",
+      zones:[
+        {id:'blanc',label:'Blanc — Faits',color:'slate',x:0,y:0,w:33.33,h:50, hint:'Données neutres, chiffres'},
+        {id:'rouge',label:'Rouge — Émotions',color:'coral',x:33.33,y:0,w:33.33,h:50, hint:'Ressentis, intuitions'},
+        {id:'noir',label:'Noir — Risques',color:'ink',x:66.66,y:0,w:33.34,h:50, hint:'Prudence, points faibles'},
+        {id:'jaune',label:'Jaune — Atouts',color:'yellow',x:0,y:50,w:33.33,h:50, hint:'Bénéfices, optimisme'},
+        {id:'vert',label:'Vert — Idées neuves',color:'mint',x:33.33,y:50,w:33.33,h:50, hint:'Créativité, alternatives'},
+        {id:'bleu',label:'Bleu — Pilotage',color:'violet',x:66.66,y:50,w:33.34,h:50, hint:'Méthode, prochaines étapes'}
+      ]
+    },
+    scamper: {
+      name:"SCAMPER",
+      tagline:"Sept verbes pour tordre une idée existante.",
+      cardText:"Pars d'une idée ou d'un produit existant et déforme-le, verbe par verbe.",
+      zones:[
+        {id:'s',label:'Substituer',color:'coral',x:0,y:0,w:25,h:50, hint:'Quoi remplacer ?'},
+        {id:'c',label:'Combiner',color:'yellow',x:25,y:0,w:25,h:50, hint:'Quoi associer ?'},
+        {id:'a',label:'Adapter',color:'mint',x:50,y:0,w:25,h:50, hint:'Quoi ajuster ?'},
+        {id:'m',label:'Modifier',color:'violet',x:75,y:0,w:25,h:50, hint:'Quoi amplifier/réduire ?'},
+        {id:'u',label:'Autre usage',color:'pink',x:0,y:50,w:33.33,h:50, hint:'Autre contexte d\'usage ?'},
+        {id:'e',label:'Éliminer',color:'slate',x:33.33,y:50,w:33.33,h:50, hint:'Quoi supprimer ?'},
+        {id:'r',label:'Réorganiser',color:'ink',x:66.66,y:50,w:33.34,h:50, hint:'Quoi inverser/réordonner ?'}
+      ]
+    },
+    mindmap: {
+      name:"Carte mentale",
+      tagline:"Un sujet au centre, des branches qui s'en échappent.",
+      cardText:"Le sujet trône au centre, huit branches libres tout autour.",
+      center:true,
+      zones:[
+        {id:'b1',label:'Branche',color:'coral', x:0,y:0,w:33.33,h:33.33},
+        {id:'b2',label:'Branche',color:'yellow',x:33.33,y:0,w:33.33,h:33.33},
+        {id:'b3',label:'Branche',color:'mint',  x:66.66,y:0,w:33.34,h:33.33},
+        {id:'b4',label:'Branche',color:'pink',  x:0,y:33.33,w:33.33,h:33.34},
+        {id:'b5',label:'Branche',color:'violet',x:66.66,y:33.33,w:33.34,h:33.34},
+        {id:'b6',label:'Branche',color:'coral', x:0,y:66.66,w:33.33,h:33.34},
+        {id:'b7',label:'Branche',color:'mint',  x:33.33,y:66.66,w:33.33,h:33.34},
+        {id:'b8',label:'Branche',color:'yellow',x:66.66,y:66.66,w:33.34,h:33.34}
+      ]
+    },
+    decision: {
+      name:"Avantages / Inconvénients",
+      tagline:"Pèse le pour et le contre avant de trancher.",
+      cardText:"Deux colonnes pour clarifier une décision à prendre.",
+      zones:[
+        {id:'av',label:'Avantages',color:'mint',x:0,y:0,w:50,h:100, hint:'Ce qui plaide pour'},
+        {id:'in',label:'Inconvénients',color:'coral',x:50,y:0,w:50,h:100, hint:'Ce qui plaide contre'}
+      ]
+    },
+    fivewhys: {
+      name:"5 Pourquoi",
+      tagline:"Remonte à la cause racine, cinq pourquoi de suite.",
+      cardText:"Une chaîne de cinq questions pour percer la vraie cause d'un problème.",
+      zones:[
+        {id:'w1',label:'Pourquoi 1',color:'coral',x:0,y:0,w:20,h:100, hint:'Pourquoi ce constat ?'},
+        {id:'w2',label:'Pourquoi 2',color:'yellow',x:20,y:0,w:20,h:100, hint:'Pourquoi cette raison ?'},
+        {id:'w3',label:'Pourquoi 3',color:'mint',x:40,y:0,w:20,h:100, hint:'Et pourquoi encore ?'},
+        {id:'w4',label:'Pourquoi 4',color:'violet',x:60,y:0,w:20,h:100, hint:'On s\'approche du fond'},
+        {id:'w5',label:'Pourquoi 5',color:'pink',x:80,y:0,w:20,h:100, hint:'La cause racine ?'}
+      ]
+    },
+    eisenhower: {
+      name:"Matrice d'Eisenhower",
+      tagline:"Trie tes tâches selon urgence et importance.",
+      cardText:"Quatre cases pour décider quoi faire, planifier, déléguer ou abandonner.",
+      zones:[
+        {id:'faire',label:'Urgent & important — Faire',color:'coral',x:0,y:0,w:50,h:50, hint:'À traiter maintenant'},
+        {id:'planifier',label:'Important, pas urgent — Planifier',color:'mint',x:50,y:0,w:50,h:50, hint:'À caler dans l\'agenda'},
+        {id:'deleguer',label:'Urgent, pas important — Déléguer',color:'yellow',x:0,y:50,w:50,h:50, hint:'À confier à quelqu\'un'},
+        {id:'eliminer',label:'Ni urgent ni important — Éliminer',color:'slate',x:50,y:50,w:50,h:50, hint:'À abandonner sans regret'}
+      ]
+    },
+    ishikawa: {
+      name:"Ishikawa (5M)",
+      tagline:"Cinq familles de causes pour un même effet.",
+      cardText:"Explore un effet observé sous cinq angles : méthode, matériel, main d'œuvre, milieu, matière.",
+      zones:[
+        {id:'methode',label:'Méthode',color:'coral',x:0,y:0,w:20,h:100, hint:'Process, façon de faire'},
+        {id:'materiel',label:'Matériel',color:'yellow',x:20,y:0,w:20,h:100, hint:'Outils, équipements'},
+        {id:'main',label:'Main d\'œuvre',color:'mint',x:40,y:0,w:20,h:100, hint:'Compétences, humain'},
+        {id:'milieu',label:'Milieu',color:'violet',x:60,y:0,w:20,h:100, hint:'Environnement, contexte'},
+        {id:'matiere',label:'Matière',color:'pink',x:80,y:0,w:20,h:100, hint:'Intrants, ressources'}
+      ]
+    },
+    whatif: {
+      name:"Et si…",
+      tagline:"Provoque ton sujet avec des scénarios extrêmes.",
+      cardText:"Pas de cadre imposé : des questions qui déplacent le regard sur ton sujet.",
+      zones:[ {id:'hyp', label:'Hypothèses', color:'pink', x:0,y:0,w:100,h:100, hint:'Clique pour poser une hypothèse ou une provocation'} ]
+    },
+    lotus: {
+      name:"Lotus Blossom",
+      tagline:"Une idée centrale entourée de huit thèmes qui peuvent, eux aussi, fleurir.",
+      cardText:"Le sujet au centre, huit thèmes associés tout autour — la fleur de lotus japonaise.",
+      center:true,
+      zones:[
+        {id:'t1',label:'Thème 1',color:'pink',   x:0,y:0,w:33.33,h:33.33},
+        {id:'t2',label:'Thème 2',color:'violet', x:33.33,y:0,w:33.33,h:33.33},
+        {id:'t3',label:'Thème 3',color:'mint',   x:66.66,y:0,w:33.34,h:33.33},
+        {id:'t4',label:'Thème 4',color:'coral',  x:0,y:33.33,w:33.33,h:33.34},
+        {id:'t5',label:'Thème 5',color:'yellow', x:66.66,y:33.33,w:33.34,h:33.34},
+        {id:'t6',label:'Thème 6',color:'violet', x:0,y:66.66,w:33.33,h:33.34},
+        {id:'t7',label:'Thème 7',color:'pink',   x:33.33,y:66.66,w:33.33,h:33.34},
+        {id:'t8',label:'Thème 8',color:'mint',   x:66.66,y:66.66,w:33.34,h:33.34}
+      ]
+    },
+    journey: {
+      name:"Parcours utilisateur",
+      tagline:"Explore chaque étape vécue par ton utilisateur ou client.",
+      cardText:"Une ligne du temps en cinq étapes, du premier contact à la fidélité.",
+      zones:[
+        {id:'decouverte',label:'Découverte',color:'coral',x:0,y:0,w:20,h:100, hint:'Premier contact'},
+        {id:'considera',label:'Considération',color:'yellow',x:20,y:0,w:20,h:100, hint:'Comparaison, doutes'},
+        {id:'achat',label:'Décision / Achat',color:'mint',x:40,y:0,w:20,h:100, hint:'Le moment du choix'},
+        {id:'usage',label:'Utilisation',color:'violet',x:60,y:0,w:20,h:100, hint:'L\'expérience réelle'},
+        {id:'fidelite',label:'Fidélisation',color:'pink',x:80,y:0,w:20,h:100, hint:'Retour, recommandation'}
+      ]
+    },
+    brainwriting: {
+      name:"Brainwriting 6-3-5",
+      tagline:"Génère des vagues d'idées, chacune s'appuyant sur la précédente.",
+      cardText:"Trois vagues successives : chaque idée nourrit la suivante, comme en 6-3-5.",
+      zones:[
+        {id:'v1',label:'Vague 1',color:'mint',x:0,y:0,w:33.33,h:100, hint:'Premier jet, sans filtre'},
+        {id:'v2',label:'Vague 2',color:'yellow',x:33.33,y:0,w:33.33,h:100, hint:'Prolonge ou détourne la vague 1'},
+        {id:'v3',label:'Vague 3',color:'violet',x:66.66,y:0,w:33.34,h:100, hint:'Pousse encore plus loin'}
+      ]
+    },
+    reverse: {
+      name:"Brainstorming inversé",
+      tagline:"Cherche d'abord comment aggraver le problème, puis retourne chaque idée.",
+      cardText:"Une pirouette : imaginer le pire pour mieux trouver le meilleur.",
+      zones:[
+        {id:'aggraver',label:'Comment aggraver le problème ?',color:'coral',x:0,y:0,w:50,h:100, hint:'Sois volontairement absurde ou cynique'},
+        {id:'inverser',label:'Retourné en solution',color:'mint',x:50,y:0,w:50,h:100, hint:'Inverse chaque idée de gauche'}
+      ]
+    },
+    empathie: {
+      name:"Carte d'empathie",
+      tagline:"Regarde ton sujet à travers les yeux d'un utilisateur réel.",
+      cardText:"Quatre quadrants pour explorer ce qu'il pense, voit, entend et fait vraiment.",
+      zones:[
+        {id:'pense',label:'Pense & ressent',color:'violet',x:0,y:0,w:50,h:50, hint:'Préoccupations, aspirations'},
+        {id:'voit',label:'Voit',color:'yellow',x:50,y:0,w:50,h:50, hint:'Son environnement, ce qu\'il observe'},
+        {id:'entend',label:'Entend',color:'mint',x:0,y:50,w:50,h:50, hint:'Ce que disent ses proches, son entourage'},
+        {id:'dit',label:'Dit & fait',color:'coral',x:50,y:50,w:50,h:50, hint:'Comportement observable, discours public'}
+      ]
+    },
+    premortem: {
+      name:"Pré-mortem",
+      tagline:"Imagine que le projet a déjà échoué, et remonte le fil.",
+      cardText:"Trois colonnes pour anticiper l'échec avant qu'il n'arrive.",
+      zones:[
+        {id:'raisons',label:'Raisons de l\'échec',color:'coral',x:0,y:0,w:33.33,h:100, hint:'Imagine : pourquoi ça a raté ?'},
+        {id:'signaux',label:'Signaux d\'alerte',color:'yellow',x:33.33,y:0,w:33.33,h:100, hint:'À quoi le voir venir tôt ?'},
+        {id:'actions',label:'Actions préventives',color:'mint',x:66.66,y:0,w:33.34,h:100, hint:'Que faire dès maintenant ?'}
+      ]
+    },
+    parties: {
+      name:"Carte des parties prenantes",
+      tagline:"Situe chaque personne concernée selon son influence et son intérêt.",
+      cardText:"Une matrice influence/intérêt pour savoir qui gérer, satisfaire, informer ou surveiller.",
+      zones:[
+        {id:'gerer',label:'Forte influence, fort intérêt — Gérer de près',color:'coral',x:0,y:0,w:50,h:50, hint:'Impliquer étroitement'},
+        {id:'satisfaire',label:'Forte influence, faible intérêt — Satisfaire',color:'violet',x:50,y:0,w:50,h:50, hint:'Tenir informé, sans surcharger'},
+        {id:'informer',label:'Faible influence, fort intérêt — Informer',color:'mint',x:0,y:50,w:50,h:50, hint:'Communiquer régulièrement'},
+        {id:'surveiller',label:'Faible influence, faible intérêt — Surveiller',color:'slate',x:50,y:50,w:50,h:50, hint:'Effort minimal, veille légère'}
+      ]
+    }
+  };
+
+  const QUICK_PROMPTS = {
+    libre:   ["Suggère des idées", "Challenge mon sujet", "Pose-moi 3 questions", "Idée improbable"],
+    probleme:["Suggère des idées", "Cette cause est-elle la vraie ?", "Et si le problème était ailleurs ?"],
+    swot:    ["Suggère des idées", "Complète mes angles morts", "Confronte mes forces et menaces"],
+    chapeaux:["Suggère des idées", "Passe au chapeau suivant", "Résume les 6 chapeaux"],
+    scamper: ["Suggère des idées", "Un exemple concret par verbe", "Le verbe le plus prometteur ?"],
+    mindmap: ["Suggère des branches", "Relie deux branches entre elles", "Quelle branche approfondir ?"],
+    decision:["Suggère des idées", "Pondère les avantages", "Quel critère je néglige ?"],
+    fivewhys:["Suggère des idées", "Ce pourquoi est-il vraiment la cause ?", "Résume la chaîne causale"],
+    eisenhower:["Suggère des idées", "Cette tâche est-elle vraiment urgente ?", "Que puis-je déléguer ?"],
+    ishikawa:["Suggère des idées", "Quel M pèse le plus ?", "Relie deux causes entre elles"],
+    whatif:["Suggère des idées", "Et si le budget explosait ?", "Et si c'était interdit ?", "Et si tu faisais l'inverse ?"],
+    lotus:["Suggère des idées", "Fais fleurir un thème", "Relie deux thèmes entre eux"],
+    journey:["Suggère des idées", "Quel est le point de friction ?", "Quelle émotion à cette étape ?"],
+    brainwriting:["Suggère des idées", "Fais évoluer la vague 1", "Combine deux idées de vagues différentes"],
+    reverse:["Suggère des idées", "Retourne cette idée en solution", "Va plus loin dans l'absurde"],
+    empathie:["Suggère des idées", "Où sont les contradictions ?", "Quel besoin caché ?"],
+    premortem:["Suggère des idées", "Quel est le risque le plus probable ?", "Transforme un signal en action"],
+    parties:["Suggère des idées", "Qui ai-je oublié ?", "Qui pourrait changer de case ?"]
+  };
+
+  let state = {
+    mode:null,
+    topic:'',
+    notes:[], // {id, zoneId, x, y, text, color}
+    activeColor:'coral',
+    aiOpen:true,
+    noteSeq:1
+  };
+
+  // ---------- HOME RENDER ----------
+  const modesGrid = document.getElementById('modes-grid');
+  const catTabs = document.getElementById('cat-tabs');
+  let activeCategory = 'tous';
+
+  function renderCatTabs(){
+    catTabs.innerHTML='';
+    Object.keys(CATEGORIES).forEach(catKey=>{
+      const count = catKey==='tous'
+        ? Object.keys(MODES).length
+        : Object.keys(MODES).filter(k=>MODE_CATEGORY[k]===catKey).length;
+      const tab = document.createElement('div');
+      tab.className='cat-tab'+(activeCategory===catKey?' active':'');
+      tab.innerHTML = `${CATEGORIES[catKey]}<span class="count">${count}</span>`;
+      tab.addEventListener('click', ()=>{
+        activeCategory = catKey;
+        renderCatTabs();
+        renderModesGrid();
+      });
+      catTabs.appendChild(tab);
+    });
+  }
+
+  function renderModesGrid(){
+    modesGrid.innerHTML='';
+    Object.keys(MODES).forEach(key=>{
+      if(activeCategory!=='tous' && MODE_CATEGORY[key]!==activeCategory) return;
+      const m = MODES[key];
+      const card = document.createElement('div');
+      card.className='mode-card';
+      const previewColors = m.zones.slice(0,4).map(z=>COLORS[z.color].solid);
+      card.innerHTML = `
+        <div class="pin" style="background:${COLORS[m.zones[0].color].solid}"></div>
+        <div class="cat-badge">${CATEGORIES[MODE_CATEGORY[key]]}</div>
+        <h3>${m.name}</h3>
+        <p>${m.cardText}</p>
+        <div class="zones-preview">${previewColors.map(c=>`<span style="background:${c}"></span>`).join('')}</div>
+      `;
+      card.addEventListener('click', ()=> startWorkspace(key));
+      modesGrid.appendChild(card);
+    });
+  }
+
+  renderCatTabs();
+  renderModesGrid();
+
+  function startWorkspace(modeKey){
+    state.mode = modeKey;
+    state.topic = document.getElementById('topic-input').value.trim() || 'Sujet à préciser';
+    state.notes = [];
+    state.noteSeq = 1;
+    document.getElementById('home').style.display='none';
+    document.getElementById('workspace').classList.add('active');
+    document.getElementById('topbar-mode').textContent = MODES[modeKey].name;
+    document.getElementById('topbar-topic').value = state.topic;
+    renderCanvas();
+    renderPalette();
+    resetAiPanel();
+  }
+
+  document.getElementById('back-btn').addEventListener('click', ()=>{
+    document.getElementById('workspace').classList.remove('active');
+    document.getElementById('home').style.display='block';
+  });
+  document.getElementById('topbar-topic').addEventListener('change', e=>{
+    state.topic = e.target.value.trim() || state.topic;
+  });
+
+  // ---------- CANVAS RENDER ----------
+  const canvas = document.getElementById('canvas');
+
+  function renderCanvas(){
+    canvas.innerHTML='';
+    const mode = MODES[state.mode];
+    mode.zones.forEach(z=>{
+      const zEl = document.createElement('div');
+      zEl.className='zone';
+      zEl.style.left=z.x+'%'; zEl.style.top=z.y+'%';
+      zEl.style.width=z.w+'%'; zEl.style.height=z.h+'%';
+      zEl.style.background = COLORS[z.color].pastel + '55';
+      zEl.dataset.zoneId = z.id;
+      zEl.innerHTML = `
+        <div class="zone-inset"></div>
+        <div class="zone-tag" style="color:${COLORS[z.color].solid}">${z.label}</div>
+        ${z.hint ? `<div class="zone-hint">${z.hint}</div>` : ''}
+      `;
+      zEl.addEventListener('click', (e)=>{
+        if(e.target.closest('.note')) return;
+        const rect = canvas.getBoundingClientRect();
+        const px = ((e.clientX - rect.left)/rect.width)*100;
+        const py = ((e.clientY - rect.top)/rect.height)*100;
+        addNote(z.id, z.color, px, py, '');
+      });
+      canvas.appendChild(zEl);
+    });
+
+    if(mode.center){
+      const c = document.createElement('div');
+      c.className='center-node';
+      c.style.left='33.33%'; c.style.top='33.33%'; c.style.width='33.33%'; c.style.height='33.34%';
+      c.textContent = state.topic;
+      canvas.appendChild(c);
+    }
+
+    state.notes.forEach(n=> canvas.appendChild(buildNoteEl(n)));
+  }
+
+  function renderPalette(){
+    const bar = document.getElementById('palette-bar');
+    bar.innerHTML='';
+    COLOR_ORDER.forEach(c=>{
+      const sw = document.createElement('div');
+      sw.className='swatch'+(state.activeColor===c?' active':'');
+      sw.style.background = COLORS[c].solid;
+      sw.title = c;
+      sw.addEventListener('click', ()=>{
+        state.activeColor = c;
+        renderPalette();
+      });
+      bar.appendChild(sw);
+    });
+  }
+
+  function addNote(zoneId, color, xPct, yPct, text, animate){
+    const note = {
+      id:'n'+(state.noteSeq++),
+      zoneId, x:Math.max(1,Math.min(85,xPct)), y:Math.max(1,Math.min(85,yPct)),
+      text: text||'', color: color || state.activeColor
+    };
+    state.notes.push(note);
+    const el = buildNoteEl(note, true);
+    canvas.appendChild(el);
+    if(!text){
+      const editable = el.querySelector('.note-text');
+      setTimeout(()=>{ editable.focus(); }, 50);
+    }
+  }
+
+  function buildNoteEl(note, isNew){
+    const el = document.createElement('div');
+    el.className='note'+(isNew?' note-enter':'');
+    el.style.left=note.x+'%'; el.style.top=note.y+'%';
+    el.style.background = COLORS[note.color].pastel;
+    el.style.borderTopColor = COLORS[note.color].solid;
+    el.dataset.id = note.id;
+
+    const pin = document.createElement('div');
+    pin.className='pin-dot';
+    pin.style.setProperty('--c', COLORS[note.color].solid);
+    pin.innerHTML = `<span style="position:absolute;inset:3px;border-radius:50%;background:${COLORS[note.color].solid}"></span>`;
+    el.appendChild(pin);
+
+    const txt = document.createElement('div');
+    txt.className='note-text';
+    txt.contentEditable='true';
+    txt.textContent = note.text;
+    txt.addEventListener('input', ()=>{ note.text = txt.textContent; });
+    txt.addEventListener('pointerdown', e=> e.stopPropagation());
+    el.appendChild(txt);
+
+    const del = document.createElement('button');
+    del.className='del-btn'; del.textContent='✕';
+    del.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      state.notes = state.notes.filter(n=>n.id!==note.id);
+      el.remove();
+    });
+    el.appendChild(del);
+
+    makeDraggable(el, note);
+    return el;
+  }
+
+  function makeDraggable(el, note){
+    let dragging=false, rect, offX, offY;
+    el.addEventListener('pointerdown', (e)=>{
+      if(e.target.classList.contains('del-btn')) return;
+      dragging=true;
+      el.classList.add('dragging');
+      el.setPointerCapture(e.pointerId);
+      rect = canvas.getBoundingClientRect();
+      offX = e.clientX; offY = e.clientY;
+    });
+    el.addEventListener('pointermove', (e)=>{
+      if(!dragging) return;
+      const dxPct = ((e.clientX-offX)/rect.width)*100;
+      const dyPct = ((e.clientY-offY)/rect.height)*100;
+      note.x = Math.max(0, Math.min(92, note.x+dxPct));
+      note.y = Math.max(0, Math.min(92, note.y+dyPct));
+      el.style.left=note.x+'%'; el.style.top=note.y+'%';
+      offX=e.clientX; offY=e.clientY;
+    });
+    el.addEventListener('pointerup', ()=>{ dragging=false; el.classList.remove('dragging'); });
+    el.addEventListener('pointercancel', ()=>{ dragging=false; el.classList.remove('dragging'); });
+  }
+
+  // ---------- AI PANEL ----------
+  const aiPanel = document.getElementById('ai-panel');
+  const aiLog = document.getElementById('ai-log');
+  const aiQuick = document.getElementById('ai-quick');
+  const aiTagline = document.getElementById('ai-tagline');
+  const assistToggle = document.getElementById('assist-toggle');
+
+  assistToggle.addEventListener('click', ()=>{
+    state.aiOpen = !state.aiOpen;
+    aiPanel.classList.toggle('collapsed', !state.aiOpen);
+  });
+
+  function resetAiPanel(){
+    const mode = MODES[state.mode];
+    aiTagline.textContent = mode.tagline;
+    aiLog.innerHTML='';
+    addBubble('system', 'Atelier "'+mode.name+'" ouvert sur : '+state.topic);
+    addBubble('ai', "Je suis là pour t'aider à avancer sans jamais choisir à ta place. Clique sur le board pour poser une idée, ou demande-moi un coup de pouce ci-dessous.");
+    aiQuick.innerHTML='';
+    (QUICK_PROMPTS[state.mode]||[]).forEach((p,i)=>{
+      const b=document.createElement('button');
+      b.className='qbtn'+(i===0?' primary':'');
+      b.textContent=p;
+      b.addEventListener('click', ()=> handleQuickPrompt(p));
+      aiQuick.appendChild(b);
+    });
+  }
+
+  function addBubble(kind, text){
+    const b=document.createElement('div');
+    b.className='bubble '+kind;
+    b.textContent=text;
+    aiLog.appendChild(b);
+    aiLog.scrollTop = aiLog.scrollHeight;
+    return b;
+  }
+
+  function setThinking(on){
+    assistToggle.classList.toggle('thinking', on);
+  }
+
+  async function callClaude(systemPrompt, userPrompt){
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model:"claude-sonnet-4-6",
+        max_tokens:1000,
+        system: systemPrompt,
+        messages:[{role:"user", content:userPrompt}]
+      })
+    });
+    const data = await resp.json();
+    const textBlock = (data.content||[]).find(c=>c.type==='text');
+    return textBlock ? textBlock.text : '';
+  }
+
+  function currentNotesSummary(){
+    if(state.notes.length===0) return "Aucune idée posée pour l'instant.";
+    return state.notes.filter(n=>n.text.trim()).map(n=>{
+      const zone = MODES[state.mode].zones.find(z=>z.id===n.zoneId);
+      return `[${zone?zone.label:'?'}] ${n.text.trim()}`;
+    }).join('\n') || "Des post-it vides sont posés mais pas encore remplis.";
+  }
+
+  async function handleQuickPrompt(prompt){
+    addBubble('user', prompt);
+    setThinking(true);
+    const isSuggest = /suggère/i.test(prompt);
+    try{
+      if(isSuggest){
+        await suggestIdeas();
+      } else {
+        const mode = MODES[state.mode];
+        const sys = `Tu es un coach de brainstorming solo en français, pour la méthode "${mode.name}" (${mode.tagline}). Tu es concis (3 à 5 phrases maximum), direct, jamais mou, tu challenges gentiment sans jamais imposer d'idée finale. Tu réponds en texte brut, sans markdown.`;
+        const user = `Sujet de l'atelier : "${state.topic}".\nIdées déjà posées :\n${currentNotesSummary()}\n\nDemande : ${prompt}`;
+        const reply = await callClaude(sys, user);
+        addBubble('ai', reply || "Je n'ai pas pu générer de réponse, réessaie.");
+      }
+    } catch(err){
+      addBubble('system', "Erreur de connexion à l'assistant. Réessaie dans un instant.");
+    }
+    setThinking(false);
+  }
+
+  async function suggestIdeas(){
+    const mode = MODES[state.mode];
+    const zoneLabels = mode.zones.map(z=>z.label);
+    const sys = `Tu es un générateur d'idées de brainstorming en français pour la méthode "${mode.name}". Tu dois répondre UNIQUEMENT avec un JSON valide, sans texte autour, sans balises markdown, de la forme exacte :
+[{"zone":"<un des labels exacts fournis>","text":"<idée courte, 10 mots maximum>"}]
+Génère entre 4 et 6 idées, réparties intelligemment entre les zones fournies : ${zoneLabels.join(' | ')}.`;
+    const user = `Sujet : "${state.topic}".\nIdées déjà présentes :\n${currentNotesSummary()}\n\nPropose nos prochaines idées, sans répéter ce qui existe déjà.`;
+    const raw = await callClaude(sys, user);
+    let clean = raw.trim().replace(/^```json/i,'').replace(/^```/,'').replace(/```$/,'').trim();
+    let ideas;
+    try{ ideas = JSON.parse(clean); } catch(e){ ideas=null; }
+    if(!Array.isArray(ideas) || ideas.length===0){
+      addBubble('ai', "Je n'ai pas réussi à formuler d'idées claires cette fois, reformule ton sujet ou réessaie.");
+      return;
+    }
+    addBubble('ai', `Voici ${ideas.length} idées posées sur le board — modifie-les ou supprime-les librement.`);
+    ideas.forEach((idea, i)=>{
+      const zone = mode.zones.find(z=> z.label.toLowerCase()===String(idea.zone||'').toLowerCase()) || mode.zones[i % mode.zones.length];
+      setTimeout(()=>{
+        const xBase = zone.x + zone.w*0.15 + Math.random()*zone.w*0.5;
+        const yBase = zone.y + zone.h*0.2 + Math.random()*zone.h*0.5;
+        addNote(zone.id, zone.color, xBase, yBase, String(idea.text||'').trim(), true);
+      }, i*180);
+    });
+  }
+
+  const aiInput = document.getElementById('ai-input');
+  const aiSend = document.getElementById('ai-send');
+  function sendUserMessage(){
+    const val = aiInput.value.trim();
+    if(!val) return;
+    aiInput.value='';
+    handleQuickPrompt(val);
+  }
+  aiSend.addEventListener('click', sendUserMessage);
+  aiInput.addEventListener('keydown', e=>{ if(e.key==='Enter') sendUserMessage(); });
+
+})();
+</script>
+</body>
+</html>
